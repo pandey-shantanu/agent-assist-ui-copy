@@ -1,0 +1,4 @@
+package.json
+*.html
+dist
+.vscode/*

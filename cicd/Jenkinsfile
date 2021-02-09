@@ -1,0 +1,68 @@
+library 'cicd-jenkins-shared-libraries@v1.16.7'
+
+dynamicPipeline {
+	shortHashLength = 10
+	productionBranches = [
+		"master",
+		"^\\d\\d\\..*"
+	]
+	infrastructureBranches = [
+		"GlobalResources"
+	]
+	build = [
+		imageName : "agentassist",
+		buildCommands : [
+			"npm install",
+			"npm run build-dev",
+			"setsid npm start >/dev/null 2>&1 < /dev/null &"//,
+			//"npm run codeCoverage"
+		],
+		stashIncludes : "angular.json,*.html,dist/agent-assist-ui/**/*,node_modules/**/*"
+	]
+  	blackDuckScan = [
+		projectName: "NAIA-RTIG-AgentAssist",
+		defaultVersionStrategy: "latestTag",
+		failOnViolations : false
+	]
+	sonarQubeScan = [
+		projectName : "NAIA-RTIG-AgentAssist",
+		projectKey : "naia-rtig-agentassist"
+	]
+	globals = [
+		CFFiles : [ "cicd/cloudfront.json"]
+	]
+	awsDev = [
+		awsRegions : [[region: "us-west-2", name : "Oregon", prefix : ""]],
+		awsCredentials : "naia_deployPipeline_ExternalId",
+		awsRoleId : "pipeline-naia-deploy-role",
+		awsCFRoleId: "pipeline-naia-agentassist-cloudformation-role",
+		awsAccountId : "300813158921"
+	]
+	infrastructureDev = [
+			CFTemplates : [
+				[template : "cicd/cloudfront.json", stackName : "ic-rtig-dev-bucket", paramOverrides : ["RTIGSubDomain=dev"]]
+			]
+	]
+	deploy = [
+		aws : [
+			s3 : [
+				commands : [
+					[
+						operation : "sync",
+						commitPrefix : true,
+						source : "dist/agent-assist-ui/",
+						dest : "",
+						acl : "public-read"
+					]
+				]
+			]
+		]
+	]
+	deployDev = [
+		aws : [
+			s3 : [
+				bucket : "ic-rtig-dev-bucket"
+			]
+		]
+	]
+}

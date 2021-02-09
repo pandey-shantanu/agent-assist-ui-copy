@@ -1,0 +1,58 @@
+<div class="container main-continer justify-content-center">
+  <div class="row justify-content-center">
+    <span class="overall-sentiment-score-tittle">Overall Sentiment Score</span>
+  </div>
+  <div class="row justify-content-center">
+    <div class="sentiment-metric">
+      <app-metric
+        [metricId]="overallSentimentMetric.guid"
+        [percent]="overallSentimentMetric.score"
+        [showLabel]="false"
+        [radius]="70"
+        [strokeWidth]="14"
+        [imageSize]="55"
+        [fontSize]="1"
+        [imageName]="overallSentimentMetric.image_src"
+        [label]="'No SCORE'"
+        [useDefaultInfo]="true">
+      </app-metric>
+    </div>
+  </div>
+  <div class="row justify-content-center score-tittle">
+    Suggestion Summary
+  </div>
+	<div class="row notification-container" [style.height.px]="heightNotificationPanel">
+    <div class="not-message-label col" *ngIf="!hasMessage">
+      There are no Suggestions yet
+    </div>
+		<ul @list class="list-group" *ngIf="hasMessage">
+			<li @items *ngFor="let notification of notificationList" class="notification-li">
+        <app-notification-message
+          [label]="notification.primaryAlertName"
+          [message]="notification.primaryAlertDescription"
+          [metric]="notification.metric"
+          [receptionDate]="notification.receptionDate">
+        </app-notification-message>
+			</li>
+		</ul>
+	</div>
+  <hr class="notification-hr"/>
+  <div class="expander-button" (click)="expanderNotificationMessagePanel()"></div>
+	<div class="container dial-container" [style.height.px]="heightMetricsPanel">
+    <div class="row justify-content-center score-tittle">
+      Guidance Scores
+    </div>
+		<div class="row justify-content-center">
+			<div *ngFor="let metric of metricList" class="metric-guidence justify-content-center">
+        <app-metric
+          [percent]="metric.score"
+          [label]="metric.frienly_name"
+          [metricId]="metric.guid"
+          [imageName]="metric.image_src"
+          [radius]="25"
+          [imageSize]="22">
+        </app-metric>
+      </div>
+		</div>
+	</div>
+</div>

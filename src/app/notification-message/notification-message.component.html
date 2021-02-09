@@ -1,0 +1,22 @@
+<div class="notification-div">
+  <div class="row">
+    <div class="metric-message col">
+      <app-metric
+        [metricId]="metric.guid"
+        [percent]="metric.score"
+        [imageName]="metric.image_src"
+        [showLabel]="false"
+        [radius]="22"
+        [imageSize]="19"
+        [strokeWidth]="3">
+      </app-metric>
+    </div>
+    <div class="col-9 message-info-div">
+      <div class="clearfix">
+        <div class="float-left notification-type">{{label}}</div>
+        <div class="float-right notification-time">{{timeLabel}}</div>
+      </div>
+      <div class="notification-message">{{message}}</div>
+    </div>
+  </div>
+</div>

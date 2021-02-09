@@ -1,0 +1,51 @@
+.notification-div {
+  width: auto;
+  height: auto;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border: 1px solid #E3E8ED;
+  opacity: 1;
+  margin-left: 18px;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.notification-time {
+  text-align: left;
+  font: normal normal normal 12px/16px 'Roboto';
+  letter-spacing: 0px;
+  color: #6D6E70;
+  opacity: 1;
+  margin-top: 11px;
+  margin-right: 14px;
+}
+
+
+.notification-type {
+  text-align: left;
+  font: normal normal normal 15px/21px 'Roboto';
+  letter-spacing: 0px;
+  color: #333333;
+  opacity: 1;
+  margin-top: 9px;
+}
+
+.notification-message {
+  text-align: left;
+  font: normal normal normal 12px/16px 'Roboto';
+  letter-spacing: 0px;
+  color: #6D6E70;
+  margin-top: 5px;
+  margin-bottom: 8px;
+  margin-right: 8px;
+}
+
+.message-info-div {
+  margin-left: -10px;
+}
+
+.metric-message{
+  width: 45px;
+  margin-top: 10px;
+  margin-left: 10px;
+}

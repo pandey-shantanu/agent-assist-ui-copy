@@ -1,0 +1,24 @@
+<div class="justify-content-md-center">
+  <div class="progress-wrapper" [ngStyle]="{'width': getDiameter()}">
+    <round-progress class="round-progress-wrapper"
+      [current]="percent"
+      [max]="100"
+      [color]="stateColor"
+      [background]="'#E5E5E5'"
+      [radius]="radius"
+      [stroke]="strokeWidth"
+      [semicircle]="true"
+      [rounded]="false"
+      [clockwise]="true"
+      [responsive]="false"
+      [duration]="800"
+      [animation]="'easeInOutQuart'"
+      [animationDelay]="0"></round-progress>
+
+    <svg-icon class="image-metric"
+    src="{{imageSrc}}" [stretch]="true" [svgStyle]="{ 'width.px':imageSize, 'height.px':imageSize, 'fill': stateColor}"></svg-icon>
+  </div>
+  <div class="dial-label" *ngIf="showLabel">
+    <span>{{label}}</span>
+  </div>
+</div>

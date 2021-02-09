@@ -1,0 +1,24 @@
+
+<ngx-spinner [fullScreen]="true" type="ball-clip-rotate-multiple" size="medium" bdColor="#007cbe">
+  <p class="landing__message">Waiting for authentication...</p>
+</ngx-spinner>
+
+<div *ngIf="!loaded && displayError" class="landing__containerpermissions" style="background-image: url('assets/images/sources/background-pattern.svg'), linear-gradient(#009eda, #007cbe)">
+	<div class="landing__containermessage">
+		<div id="lockIcon" class="landing__lockicon" style="background-image: url('assets/images/sources/lockicon.svg')">
+			</div>
+			<div class="landing__message">
+				<p class="h2">
+					Permissions Required
+				</p>
+
+				<p class="h6">
+					You need privileges to view this page. Contact your administrator.
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="displayNotifications">
+		<app-notifications></app-notifications>
+	</div>

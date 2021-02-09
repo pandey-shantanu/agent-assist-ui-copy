@@ -1,0 +1,251 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "Create RTIG/AgentAssist S3 Bucket and CloudFront.  Version 1.0",
+	"Parameters": {
+		"RTIGSubDomain": {
+			"Description": "Domain for RTIG/AgentAssist dev test staging etc",
+			"Type": "String",
+			"Default": "dev",
+			"AllowedValues": [ "sandbox", "dev", "test", "staging", "prod" ]
+		}
+	},
+	"Conditions": {
+		"isProd": {
+			"Fn::Equals": [
+				"prod",
+				{ "Ref": "RTIGSubDomain" }
+			]
+		},
+		"isStaging": {
+			"Fn::Equals": [
+				"staging",
+				{ "Ref": "RTIGSubDomain" }
+			]
+		}
+	},
+	"Resources": {
+		"S3RTIGBucket": {
+			"Type": "AWS::S3::Bucket",
+			"DeletionPolicy": "Retain",
+			"Properties": {
+				"BucketName": {
+					"Fn::Join": [
+						"",
+						[
+							"ic-rtig-",
+							{ "Ref": "RTIGSubDomain" },
+							"-bucket"
+						]
+					]
+				},
+				"AccessControl": "PublicRead",
+				"WebsiteConfiguration": {
+					"IndexDocument": "index.html",
+					"ErrorDocument": "error.html"
+				},
+				"CorsConfiguration": {
+					"CorsRules": [
+						{
+							"AllowedHeaders": [ "*" ],
+							"AllowedMethods": [ "GET", "HEAD", "POST", "PUT" ],
+							"AllowedOrigins": [ "*" ],
+							"Id": "OpenCors"
+						}
+					]
+				},
+				"Tags": [
+					{
+						"Key": "Application",
+						"Value": "RTIG"
+					},
+					{
+						"Key": "Product",
+						"Value": "RTIG"
+					},
+					{
+						"Key": "Owner",
+						"Value": "CXOne"
+					}
+				]
+			}
+		},
+		"RTIGCDN": {
+			"Type": "AWS::CloudFront::Distribution",
+			"Properties": {
+				"DistributionConfig": {
+					"Aliases": [
+						{
+							"Fn::If": [
+								"isProd",
+								"rtig.niceincontact.com",
+								{
+									"Fn::Join": [
+										"",
+										[
+											"rtig.",
+											{ "Ref": "RTIGSubDomain" },
+											".niceincontact.com"
+										]
+									]
+								}
+							]
+						},
+						{
+							"Fn::If": [
+								"isProd",
+								"rtig.nice-incontact.com",
+								{
+									"Fn::Join": [
+										"",
+										[
+											"rtig.",
+											{ "Ref": "RTIGSubDomain" },
+											".nice-incontact.com"
+										]
+									]
+								}
+							]
+						}
+					],
+					"Origins": [
+						{
+							"DomainName": {
+								"Fn::GetAtt": ["S3RTIGBucket", "DomainName"]
+							},
+							"Id": { "Ref": "S3RTIGBucket" },
+							"S3OriginConfig": {}
+						}
+					],
+					"Enabled": "true",
+					"DefaultCacheBehavior": {
+						"Compress": true,
+						"AllowedMethods": [ "GET", "HEAD", "OPTIONS" ],
+						"TargetOriginId": { "Ref": "S3RTIGBucket" },
+						"ForwardedValues": {
+							"QueryString": "false",
+							"Cookies": {
+								"Forward": "none"
+							}
+						},
+						"ViewerProtocolPolicy": "allow-all"
+					},
+					"DefaultRootObject": "index.html",
+					"PriceClass": "PriceClass_All",
+					"ViewerCertificate": {
+						"AcmCertificateArn": { "Fn::ImportValue": "RegionConfig-CloudFrontSSLCertARNv1" },
+						"MinimumProtocolVersion": "TLSv1.1_2016",
+						"SslSupportMethod": "sni-only"
+					}
+				},
+				"Tags": [
+					{
+						"Key": "Application",
+						"Value": "RTIG"
+					},
+					{
+						"Key": "Product",
+						"Value": "RTIG"
+					},
+					{
+						"Key": "Owner",
+						"Value": "RTIG-UI"
+					}
+				]
+			},
+			"DependsOn": [
+				"S3RTIGBucket"
+			]
+		},
+		"RTIGDNSRecord": {
+			"Type": "AWS::Route53::RecordSet",
+			"Properties": {
+				"Name": {
+					"Fn::If": [
+						"isProd",
+						"rtig.niceincontact.com.",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"rtig.",
+									{ "Ref": "RTIGSubDomain" },
+									".niceincontact.com."
+								]
+							]
+						}
+					]
+				},
+				"Type": "A",
+				"HostedZoneId": { "Fn::ImportValue": "DNSZoneID-RTIG" },
+				"AliasTarget": {
+					"DNSName": { "Fn::GetAtt": [ "RTIGCDN", "DomainName" ] },
+					"HostedZoneId": "Z2FDTNDATAQYW2"
+				}
+			},
+			"DependsOn": [
+				"RTIGCDN"
+			]
+		},
+		"RTIGDNSRecordWithDash": {
+			"Type": "AWS::Route53::RecordSet",
+			"Properties": {
+				"Name": {
+					"Fn::If": [
+						"isProd",
+						"rtig.nice-incontact.com.",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"rtig.",
+									{ "Ref": "RTIGSubDomain" },
+									".nice-incontact.com."
+								]
+							]
+						}
+					]
+				},
+				"Type": "A",
+				"HostedZoneId": { "Fn::ImportValue": "DNSZoneID-RTIGWithDash" },
+				"AliasTarget": {
+					"DNSName": { "Fn::GetAtt": [ "RTIGCDN", "DomainName" ] },
+					"HostedZoneId": "Z2FDTNDATAQYW2"
+				}
+			},
+			"DependsOn": [
+				"RTIGCDN"
+			]
+		},
+		"RTIGDNSRecordPerf": {
+			"Type": "AWS::Route53::RecordSet",
+			"Condition" : "isStaging",
+			"Properties": {
+				"Name": {
+					"Fn::Join": [
+						"",
+						[
+							"rtig.",
+							{ "Ref": "RTIGSubDomain" },
+							".nice-incontact.com."
+						]
+					]
+				},
+				"Type": "A",
+				"HostedZoneId": { "Fn::ImportValue": "DNSZoneID-RTIGPerf" },
+				"AliasTarget": {
+					"DNSName": { "Fn::GetAtt": [ "RTIGCDN", "DomainName" ] },
+					"HostedZoneId": "Z2FDTNDATAQYW2"
+				}
+			},
+			"DependsOn": [
+				"RTIGCDN"
+			]
+		}
+	},
+	"Outputs": {
+		"CloudFrontURL": {
+			"Description": "URL of CloudFront Distribution",
+			"Value": { "Fn::GetAtt": [ "RTIGCDN", "DomainName" ] }
+		}
+	}
+}

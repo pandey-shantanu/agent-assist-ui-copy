@@ -1,0 +1,37 @@
+.landing__containermessage {
+    text-align: center;
+    width: 100%;
+    height: 300px;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.landing__lockicon {
+  display: inline-block;
+  width: 50px;
+  height: 65px;
+  margin: 0 auto;
+  background-repeat: no-repeat;
+  // A known issue prevents angular from relative pathing in scss:
+  // https://github.com/angular/angular-cli/issues/12797
+  // For now these images will be added inline
+  //background-image: url('assets/images/sources/lockicon.svg');
+  background-position: bottom;
+}
+
+.landing__message {
+  color: white;
+}
+
+.landing__containerpermissions {
+  height: 100%;
+  width: 100%;
+  left: 0%;
+  // A known issue prevents angular from relative pathing in scss:
+  // https://github.com/angular/angular-cli/issues/12797
+  // For now these images will be added inline
+  //background-image: url('assets/images/sources/background-pattern.svg'), linear-gradient(#009eda, #007cbe);
+  position: fixed;
+}

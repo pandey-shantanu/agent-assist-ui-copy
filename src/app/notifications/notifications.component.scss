@@ -1,0 +1,101 @@
+.main-continer {
+  min-height: 683px;
+  min-width: 340px;
+  width: 340px;
+	height: 100%;
+}
+
+.notification-container {
+	max-height: 260px;
+  overflow: auto;
+}
+
+/* start scroll styles */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #3131314D;
+}
+/* end scroll styles */
+
+.notification-li{
+	border: 0px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+
+.overall-sentiment-score-tittle {
+  font: normal normal bold 14px/19px 'Open Sans';
+  letter-spacing: 0px;
+  color: #404040;
+  opacity: 1;
+  margin-top: 10px;
+  margin-bottom: 5px;
+ }
+
+.score-tittle {
+  font: normal normal normal 14px/19px 'Roboto';
+  letter-spacing: 0px;
+  color: #404040;
+  opacity: 1;
+  text-align: center;
+}
+
+.expander-button {
+  width: 24px;
+  height: 24px;
+  background: #127CBE 0% 0% no-repeat padding-box;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 1;
+}
+
+.expander-button:hover {
+  cursor: pointer;
+}
+
+.notification-hr{
+	margin-top: 8px;
+  margin-bottom:0px;
+}
+
+.dial-container {
+  overflow: auto;
+}
+
+.dial-container::-webkit-scrollbar {
+  display: none;
+}
+
+.sentiment-metric {
+  width: 230px;
+  height: 89px;
+}
+
+.metric-guidence {
+  width: 95px;
+  margin: 4px;
+}
+
+.not-message-label {
+  text-align: center;
+  font: normal normal normal 14px/19px Roboto;
+  letter-spacing: 0px;
+  color: #A5A5A5;
+  opacity: 1;
+  margin-top: 50px;
+}
